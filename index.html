@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Island Escape Board Game</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #e0f7fa; margin-top: 40px; }
+    #board { display: flex; flex-wrap: wrap; width: 420px; margin: 20px auto; gap: 5px; }
+    .tile { width: 50px; height: 50px; background: #fff; border: 2px solid #00796b; 
+            display: flex; align-items: center; justify-content: center; font-weight: bold; position: relative; }
+    .special { background: #ffe082; }
+    #player { width: 18px; height: 18px; background: #d32f2f; border-radius: 50%; position: absolute; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Island Escape Game</h1>
+  <p id="status">Press Roll to start moving!</p>
+  <button onclick="playTurn()">Roll Die</button>
+  <div id="board"></div>
+
+  <script>
+    let pos = 0;
+    const total = 20;
+    const board = document.getElementById('board');
+    
+    for (let i = 0; i <= total; i++) {
+      const tile = document.createElement('div');
+      tile.className = 'tile' + ([3,7,11,15,19].includes(i) ? ' special' : '');
+      tile.id = 'tile-' + i;
+      tile.innerText = i === 0 ? 'START' : i === 20 ? 'BOAT' : i;
+      board.appendChild(tile);
+    }
+
+    const player = document.createElement('div');
+    player.id = 'player';
+    document.getElementById('tile-0').appendChild(player);
+
+    function playTurn() {
+      if (pos >= total) return;
+      const roll = Math.floor(Math.random() * 6) + 1;
+      pos += roll;
+      if (pos > total) pos = total - (pos - total);
+
+      if (pos === 3) pos = 6;
+      else if (pos === 11) pos = 8;
+      else if (pos === 15) pos = 18;
+      else if (pos === 19) pos = 14;
+
+      document.getElementById('tile-' + pos).appendChild(player);
+      document.getElementById('status').innerText = pos === total ? 
+        `You rolled a ${roll} and reached the Rescue Boat! You Win!` : `You rolled a ${roll}. Current Space: ${pos}`;
+    }
+  </script>
+</body>
+</html>
